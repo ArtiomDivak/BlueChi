@@ -21,7 +21,7 @@ systemd_dep = dependency('libsystemd')
 common_inc = include_directories('src/common')
 ini_inc = include_directories('src/ini')
 
-ini_src = files('src/ini/ini.c')
+ini_src = files('src/ini/ini.c', 'src/ini/config.c', 'src/common/hashmap/hashmap.c')
 
 
 # client

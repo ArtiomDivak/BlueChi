@@ -1,4 +1,5 @@
 #include "../common/dbus.h"
+#include "../ini/config.h"
 #include "dbus.h"
 #include "opt.h"
 
@@ -14,6 +15,8 @@ int main(int argc, char *argv[]) {
         host.sin_family = AF_INET;
         host.sin_addr.s_addr = htonl(INADDR_ANY);
         host.sin_port = 0;
+        struct hashmap *ini_hashmap _cleanup_hashmap_ = NULL;
+        char *ini_file_location = "../../../doc/example.ini";
 
         get_opts(argc, argv, &host);
 
@@ -24,6 +27,12 @@ int main(int argc, char *argv[]) {
                 fprintf(stderr, "Failed to create event: %s\n", strerror(-r));
                 return EXIT_FAILURE;
         }
+
+        ini_hashmap = parsing_ini_file(ini_file_location);
+        if (ini_hashmap == NULL) {
+                return EXIT_FAILURE;
+        }
+
 
         _cleanup_sd_bus_ sd_bus *orch = NULL;
         r = setup_peer_dbus(orch, &host);

@@ -5,6 +5,9 @@ node_src = [
   'node.c',
   'opt.c'
 ]
+
+node_src += ini_src
+
 executable(
   'node',
   node_src,

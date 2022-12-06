@@ -1,4 +1,5 @@
 #include "../common/dbus.h"
+#include "../ini/config.h"
 #include "../ini/ini.h"
 #include "controller.h"
 #include "opt.h"
@@ -6,15 +7,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* A function that takes care of printing the lines of the ini file  */
-// NOLINTNEXTLINE
-static int ini_handler_func(void *user, const char *section, const char *name, const char *value) {
-        printf("[%s] %s = %s\n", section, name, value);
-        return EXIT_FAILURE;
-}
-
 int main(int argc, char *argv[]) {
         fprintf(stdout, "Hello from orchestrator!\n");
+
+        struct hashmap *ini_hashmap _cleanup_hashmap_ = NULL;
 
         int port = 0;
         _cleanup_free_ char *configPath = NULL;
@@ -36,9 +32,8 @@ int main(int argc, char *argv[]) {
                 return EXIT_FAILURE;
         }
 
-        r = ini_parse(configPath, ini_handler_func, NULL);
-        if (r < 0) {
-                fprintf(stderr, "Failed to parse INI file: %s\n", configPath);
+        ini_hashmap = parsing_ini_file(configPath);
+        if (ini_hashmap != NULL) {
                 return EXIT_FAILURE;
         }
 
